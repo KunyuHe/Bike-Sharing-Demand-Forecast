@@ -1,7 +1,8 @@
 import os
 import logging
 import time
-
+import pickle
+import pandas as pd
 
 def createDirs(dir_path):
     """
@@ -34,3 +35,69 @@ def createLogger(log_dir, logger_name):
     logger.addHandler(fh)
 
     return logger
+
+
+def saveDF(df, dir, file_name):
+    df.to_csv(dir / file_name, index=True)
+    with open(dir / (file_name + "_dtypes.pkl"), 'wb') as file:
+        pickle.dump(df.dtypes.to_dict(), file)
+
+
+def readDF(dir, file_name="train.csv"):
+    with open(dir / (file_name + "_dtypes.pkl"), 'rb') as file:
+        dtypes = pickle.load(file)
+
+    return pd.read_csv(dir / file_name,
+                       index_col=0, parse_dates=True, dtype=dtypes)
+
+
+class FeatureNames():
+    def __init__(self, dir):
+        self.dir = dir
+
+    def write(self, feature_names):
+        with open(self.dir / "feature_names.txt", 'w') as file:
+            file.write("\n".join(feature_names))
+
+    def append(self, feature_names):
+        with open(self.dir / "feature_names.txt", 'a') as file:
+            file.write("\n")
+            file.write("\n".join(feature_names))
+
+    def read(self):
+        with open(self.dir / "feature_names.txt", 'w') as file:
+            lst = file.readlines()
+            print(lst)
+
+
+def ask(names, message, logger):
+    """
+    Ask user for their choice of an element.
+    Inputs:
+        - lst (list of strings): names of the element of choice
+        - message (str)
+    Returns:
+        (int) index for either model or metrics
+    """
+    indices = []
+
+    logger.info("Up till now we support:")
+    for i, name in enumerate(names):
+        logger.info("%s. %s" % (i + 1, name))
+        indices.append(str(i + 1))
+
+    index = input("%s\n" % message)
+    if index in indices:
+        return int(index) - 1
+    else:
+        logger.info("Input wrong. Type one in {} and hit Enter.".format(indices))
+        return ask(names, message, logger)
+
+
+def getNumCat(df, target):
+    df = df.drop(target, axis=1)
+
+    cat = df.columns[df.dtypes == 'category'].tolist()
+    num = df.columns.difference(cat).tolist()
+
+    return num, cat
