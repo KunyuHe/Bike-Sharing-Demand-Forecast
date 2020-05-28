@@ -7,7 +7,7 @@ from sklearn.pipeline import Pipeline, FeatureUnion
 from sklearn.preprocessing import (StandardScaler, LabelBinarizer,
                                    PolynomialFeatures)
 
-from utils import createLogger, createDirs, FeatureNames
+import utils
 
 INPUT_DIR = Path('../data/preprocessed/')
 OUTPUT_DIR = Path('../data/preprocessed/')
@@ -41,7 +41,9 @@ class CategoricalEncoder(TransformerMixin):
             else:
                 colnames += ["%s_%s" % (column, level) for level in levels]
 
-        FeatureNames(OUTPUT_DIR).append(colnames)
+        with open(OUTPUT_DIR / "categorical_features.txt", 'w') as file:
+            file.write("\n".join(colnames))
+
         return np.concatenate(encoded, axis=1)
 
 
@@ -68,14 +70,12 @@ def get_preprocessing_steps(numerical_lst, categorical_lst):
 
 
 if __name__ == '__main__':
-    createDirs(OUTPUT_DIR)
-    createDirs(LOG_DIR)
+    utils.createDirs(OUTPUT_DIR)
+    utils.createDirs(LOG_DIR)
 
-    logger = createLogger(LOG_DIR, "preprocessing")
-    logger.info("=" * 30 + "Data Preprocessing" + "=" * 30)
+    logger = utils.createLogger(LOG_DIR, "preprocessing")
+    logger.info("=" * 40 + " Data Preprocessing " + "=" * 40)
     logger.info("Logger created, logging to %s" % LOG_DIR.absolute())
 
-    logger.info(
-        "Feature names saved to %s\\feature_names.txt" % LOG_DIR.absolute())
-    logger.info("Preprocessing Pipeline:")
+    logger.info(f"({utils.timeStamp()}) Creating preprocessing Pipeline:")
     logger.info(get_preprocessing_steps([], []))

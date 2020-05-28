@@ -1,0 +1,4 @@
+humidity
+temp
+temp_diff
+windspeed

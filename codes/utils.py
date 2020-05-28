@@ -1,8 +1,13 @@
-import os
 import logging
-import time
+import os
 import pickle
+import time
+from datetime import datetime
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 import pandas as pd
+
 
 def createDirs(dir_path):
     """
@@ -14,6 +19,8 @@ def createDirs(dir_path):
     """
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
+        if isinstance(dir_path, str):
+            dir_path = Path(dir_path)
         file = open(dir_path / ".gitkeep", "w+")
         file.close()
 
@@ -31,7 +38,8 @@ def createLogger(log_dir, logger_name):
     logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
     logger.addHandler(ch)
-    fh = logging.FileHandler(log_dir / (time.strftime("%Y%m%d-%H%M%S")+'.log'))
+    fh = logging.FileHandler(
+        log_dir / (time.strftime("%Y%m%d-%H%M%S") + '.log'))
     logger.addHandler(fh)
 
     return logger
@@ -49,6 +57,12 @@ def readDF(dir, file_name="train.csv"):
 
     return pd.read_csv(dir / file_name,
                        index_col=0, parse_dates=True, dtype=dtypes)
+
+
+def readFeatureNames(dir):
+    with open(dir / "feature_names.txt", 'r') as file:
+        lst = file.readlines()
+    return lst
 
 
 class FeatureNames():
@@ -90,7 +104,8 @@ def ask(names, message, logger):
     if index in indices:
         return int(index) - 1
     else:
-        logger.info("Input wrong. Type one in {} and hit Enter.".format(indices))
+        logger.info(
+            "Input wrong. Type one in {} and hit Enter.".format(indices))
         return ask(names, message, logger)
 
 
@@ -101,3 +116,22 @@ def getNumCat(df, target):
     num = df.columns.difference(cat).tolist()
 
     return num, cat
+
+
+def saveFig(dir_path, file_name, fig, pause=3):
+    createDirs(dir_path)
+    fig.savefig(dir_path / file_name, dpi=300, bbox_inches="tight")
+
+    fig.tight_layout()
+    plt.show(block=False)
+    plt.pause(pause)
+    plt.close()
+
+
+def timeStamp():
+    now = datetime.now().strftime("_%Y-%m-%d_%H-%M-%S")
+    return f"Timestamp - {now}"
+
+
+if __name__ == '__main__':
+    pass

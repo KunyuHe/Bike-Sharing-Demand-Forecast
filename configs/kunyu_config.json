@@ -1,0 +1,59 @@
+{
+  "Regularized Linear Regression": {
+    "default": {
+      "random_state": 123,
+      "learning_rate": "adaptive",
+      "early_stopping": true,
+      "max_iter": 10000
+    },
+    "hyper": [{
+      "penalty": ["l1", "l2"],
+      "alpha": [0.01, 0.1, 0.2],
+      "eta0": [0.01, 0.1, 1]
+      }]
+  },
+
+  "Dummy": {
+    "default": {
+
+    },
+    "hyper": [{
+      "strategy": ["mean", "median"]
+    }]
+
+  },
+
+  "Support Vector Machine": {
+    "default": {
+      "kernel": "rbf"
+    },
+    "hyper": [{
+      "gamma": [0.001, 0.01, 0.1, 1],
+      "C": [1, 10, 100]
+      }]
+  },
+
+  "Random Forest": {
+    "default": {
+      "random_state": 123,
+      "n_jobs": -1
+    },
+    "hyper": [{
+      "n_estimators": [200, 300, 400],
+      "max_depth": [10, 15, 20, 25]
+    }]
+  },
+
+  "XgBoost": {
+    "default": {
+      "objective": "reg:squarederror",
+      "random_state": 123
+    },
+    "hyper": [{
+      "n_estimators": [100, 300, 500],
+      "max_depth": [1, 3, 5, 10],
+      "learning_rate": [0.01, 0.1, 1],
+      "reg_lambda": [0.01, 0.1]
+    }]
+  }
+}
