@@ -1,10 +1,12 @@
+import sys
 import time
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
-import utils
+sys.path.append("../")
+from utils import utils
 
 INPUT_DIR = Path("../data/")
 OUTPUT_DIR = Path("../data/clean/")
@@ -40,15 +42,14 @@ def clean(file_name="train.csv"):
     utils.saveDF(df, OUTPUT_DIR, file_name)
     if mode == "train":
         logger.info("\tTarget vector histogram:")
-        fig = plt.figure(figsize=(13, 6))
+        plt.figure(figsize=(13, 6))
         plt.hist(df.cnt, color="#00245D", edgecolor="black", bins=50)
         plt.title("Training Target Distribution", fontsize=18)
-        utils.saveFig(OUTPUT_DIR, "cnt_dist.png", fig, pause=5)
+        utils.saveFig(OUTPUT_DIR, "cnt_dist.png", show=True)
 
-    logger.info(f"{mode.title()}ing feature matrix dimension: {df.shape}")
+    logger.info(f"\t{mode.title()}ing feature matrix dimension: {df.shape}")
     logger.info(f"({utils.timeStamp()}) Data cleaning job on {mode}ing data"
-                f" finished.")
-    logger.info(f"(Time Elapsed - {(time.time() - start):.0f}s)\n\n")
+                f" finished. Time elapsed {(time.time() - start):.2f}s.\n")
 
 
 def main():
@@ -62,7 +63,3 @@ def main():
 
     clean("train.csv")
     clean("test.csv")
-
-
-if __name__ == "__main__":
-    main()

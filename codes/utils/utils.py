@@ -59,31 +59,6 @@ def readDF(dir, file_name="train.csv"):
                        index_col=0, parse_dates=True, dtype=dtypes)
 
 
-def readFeatureNames(dir):
-    with open(dir / "feature_names.txt", 'r') as file:
-        lst = file.readlines()
-    return lst
-
-
-class FeatureNames():
-    def __init__(self, dir):
-        self.dir = dir
-
-    def write(self, feature_names):
-        with open(self.dir / "feature_names.txt", 'w') as file:
-            file.write("\n".join(feature_names))
-
-    def append(self, feature_names):
-        with open(self.dir / "feature_names.txt", 'a') as file:
-            file.write("\n")
-            file.write("\n".join(feature_names))
-
-    def read(self):
-        with open(self.dir / "feature_names.txt", 'w') as file:
-            lst = file.readlines()
-            print(lst)
-
-
 def ask(names, message, logger):
     """
     Ask user for their choice of an element.
@@ -95,12 +70,13 @@ def ask(names, message, logger):
     """
     indices = []
 
-    logger.info("Up till now we support:")
+    logger.info("\n" + "*" * 80 + "\nUp till now we support:")
     for i, name in enumerate(names):
         logger.info("%s. %s" % (i + 1, name))
         indices.append(str(i + 1))
 
     index = input("%s\n" % message)
+    logger.info("*" * 80 + "\n")
     if index in indices:
         return int(index) - 1
     else:
@@ -118,18 +94,18 @@ def getNumCat(df, target):
     return num, cat
 
 
-def saveFig(dir_path, file_name, fig, pause=3):
+def saveFig(dir_path, file_name, show=False):
     createDirs(dir_path)
-    fig.savefig(dir_path / file_name, dpi=300, bbox_inches="tight")
+    plt.savefig(dir_path / file_name, dpi=300, bbox_inches="tight")
 
-    fig.tight_layout()
-    plt.show(block=False)
-    plt.pause(pause)
-    plt.close()
+    if show:
+        plt.show(block=False)
+        plt.pause(3)
+        plt.close()
 
 
 def timeStamp():
-    now = datetime.now().strftime("_%Y-%m-%d_%H-%M-%S")
+    now = datetime.now().strftime("%Y-%m-%d %H-%M-%S")
     return f"Timestamp - {now}"
 
 

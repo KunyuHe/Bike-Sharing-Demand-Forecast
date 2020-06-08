@@ -1,15 +1,16 @@
+import sys
+import time
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
-from patsy import dmatrix
-import time
 
-import utils
+sys.path.append("../")
+from utils import utils
+from train import INPUT_DIR
 
+OUTPUT_DIR = INPUT_DIR
 INPUT_DIR = Path('../data/clean/')
-OUTPUT_DIR = Path('../data/preprocessed/')
-LOG_DIR = Path('../logs/preprocessed/')
+LOG_DIR = Path('../logs/feature-engineer/')
 
 
 def featureEngineer(file_name="train.csv"):
@@ -48,10 +49,9 @@ def featureEngineer(file_name="train.csv"):
     df.drop(['season', 'workingday', 'atemp'], axis=1, inplace=True)
     utils.saveDF(df, OUTPUT_DIR, file_name)
 
-    logger.info(f"{mode.title()}ing feature matrix dimension: {df.shape}")
+    logger.info(f"\t{mode.title()}ing feature matrix dimension: {df.shape}")
     logger.info(f"({utils.timeStamp()}) Feature engineering job on {mode}ing "
-                f"data finished.")
-    logger.info(f"(Time Elapsed - {(time.time() - start):.0f}s)\n\n")
+                f"data finished. Time elapsed {(time.time() - start):.2f}s.\n")
 
 
 def main():
@@ -59,13 +59,9 @@ def main():
     utils.createDirs(LOG_DIR)
 
     global logger
-    logger = utils.createLogger(LOG_DIR, "feature_engineering")
-    logger.info("=" * 40 + " Feature Engineering " + "=" * 40)
+    logger = utils.createLogger(LOG_DIR, "feature-engineer")
+    logger.info("\n" + "=" * 40 + " Feature Engineering " + "=" * 40)
     logger.info("Logger created, logging to %s" % LOG_DIR.absolute())
 
     featureEngineer(file_name="train.csv")
     featureEngineer(file_name="test.csv")
-
-
-if __name__ == '__main__':
-    main()
