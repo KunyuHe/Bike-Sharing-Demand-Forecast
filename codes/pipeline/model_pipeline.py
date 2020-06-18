@@ -107,9 +107,11 @@ class ModelPipeline():
         reg = self.est['reg']
 
         logger.info("\tMaking predictions on the test set.")
-        ypred = np.exp(self.est.predict(self.X_train))
+        ypred = np.exp(self.est.predict(self.X_test))
         np.savetxt(self.model_dir / "pred.csv", ypred, delimiter=",")
-        evaluate.plotPredictedValues(np.exp(self.y_train), ypred,
+
+        evaluate.plotPredictedValues(np.exp(self.y_train),
+                                     np.exp(self.est.predict(self.X_train)),
                                      self.model_dir)
         logger.info(f"\tPredictions saved under {self.model_dir}.")
 
