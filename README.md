@@ -16,11 +16,9 @@ The datasets listed below can be downloaded on the competition webpage linked [h
 │  train.csv
 ````
 
-The training set contains 10.9K hourly observations of bike sharing demand in Washington, D.C. on the first 20 days of each month in 2011 and 2012. It has 12 features, 9 of which are available in the test set. Refer to the data dictionary for feature definitions.
+The training set contains 10.9K hourly observations of bike sharing demand in Washington, D.C. on the first 20 days of each month in 2011 and 2012. It has 12 features, 9 of which are available in the test set. Refer to the [data dictionary](https://github.com/KunyuHe/Bike-Sharing-Demand-Forecast/blob/master/data/data_dictionary.csv) for feature definitions.
 
-<script src="https://gist.github.com/KunyuHe/0e48ecb5ed23dce6dacfb35bcae1ae1f.js"></script>
-
-Note that `count` is not available at prediction time as it is the target. Likewise, `casual` and `registered` are decomposition of `count` as $\text{count} = \text{casual} + \text{registered}$ and will not be available at prediction time as well.
+Note that `count` is not available at prediction time as it is the target. Likewise, `casual` and `registered` are decomposition of `count` and will not be available at prediction time as well.
 
 There are 6493 observations and 10 features in the test set, accounting for hourly measurements on the last days of each month in 2011 and 2012.
 
